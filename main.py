@@ -74,15 +74,15 @@ async def play(ctx, arg):
     print(raw_song)
     queue = os.listdir(path="queue")
     new_file = "queue\\" + str(max(queue, key=len)[:-4] + "b" if len(queue) != 0 else "b") + ".mp3"
-    print(os.path.join(raw_song))
+    print(new_file)
     os.rename(os.path.join(raw_song), os.path.join(new_file))
 
     # Воспроизведение музыки
     queue = os.listdir(path="queue")
     if not voice.is_playing():
         try:
-            await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
             voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[0])), after=lambda e: print(e))
+            await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
             await asyncio.sleep(MP4("queue\\" + queue[0]).info.length + 1)
             await start_play(ctx)
         except Exception as e:
