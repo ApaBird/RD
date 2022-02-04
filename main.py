@@ -84,9 +84,9 @@ async def play(ctx, arg):
     print(queue2)
     if not voice.is_playing():
         try:
-            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[0])), after=lambda e: print(e))
+            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg/bin/ffmpeg.exe", source=os.path.join("queue/" + queue[0])), after=lambda e: print(e))
             await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
-            await asyncio.sleep(MP4("queue\\" + queue[0]).info.length + 1)
+            await asyncio.sleep(MP4("queue/" + queue[0]).info.length + 1)
             await start_play(ctx)
         except Exception as e:
             await ctx.send(f"Возникла ошибка {e}")
@@ -97,13 +97,13 @@ async def play(ctx, arg):
 async def start_play(ctx):
     queue = os.listdir(path="queue")
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    os.remove("queue\\" + queue[0])
+    os.remove("queue/" + queue[0])
     if len(queue) > 1:
         try:
             await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
-            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[1])), after=lambda e: print(e))
+            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg/bin/ffmpeg.exe", source=os.path.join("queue/" + queue[1])), after=lambda e: print(e))
             play_next = True
-            await asyncio.sleep(MP4("queue\\" + queue[1]).info.length + 1)
+            await asyncio.sleep(MP4("queue/" + queue[1]).info.length + 1)
             if play_next:
                 await start_play(ctx)
         except Exception as e:
