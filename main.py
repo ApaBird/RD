@@ -84,7 +84,7 @@ async def play(ctx, arg):
     print(queue2)
     if not voice.is_playing():
         try:
-            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg/bin/ffmpeg.exe", source=os.path.join("queue/" + queue[0])), after=lambda e: print(e))
+            voice.play(discord.FFmpegPCMAudio(source=os.path.join("queue/" + queue[0])), after=lambda e: print(e))
             await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
             await asyncio.sleep(MP4("queue/" + queue[0]).info.length + 1)
             await start_play(ctx)
@@ -101,7 +101,7 @@ async def start_play(ctx):
     if len(queue) > 1:
         try:
             await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
-            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg/bin/ffmpeg.exe", source=os.path.join("queue/" + queue[1])), after=lambda e: print(e))
+            voice.play(discord.FFmpegPCMAudio(source=os.path.join("queue/" + queue[1])), after=lambda e: print(e))
             play_next = True
             await asyncio.sleep(MP4("queue/" + queue[1]).info.length + 1)
             if play_next:
