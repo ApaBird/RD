@@ -73,13 +73,13 @@ async def play(ctx, arg):
     raw_song = dl.streams.get_audio_only().download(output_path="video_dl")
     print(raw_song)
     queue = os.listdir(path="queue")
-    new_file = raw_song.rsplit('\\', 2)[0] + "/queue/" + str(max(queue, key=len)[:-4] + "b" if len(queue) != 0 else "b") + ".mp3"
+    new_file = raw_song.rsplit('/', 2)[0] + "/queue/" + str(max(queue, key=len)[:-4] + "b" if len(queue) != 0 else "b") + ".mp3"
     print(new_file)
     os.rename(os.path.join(raw_song), os.path.join(new_file))
 
     # Воспроизведение музыки
     queue = os.listdir(path="queue")
-    queue2 = os.listdir(path=raw_song.rsplit('\\', 2)[0] + "/queue")
+    queue2 = os.listdir(path=raw_song.rsplit('/', 2)[0] + "/queue")
     print(queue)
     print(queue2)
     if not voice.is_playing():
