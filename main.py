@@ -22,10 +22,12 @@ async def join(ctx):
     if voice and voice.is_connected():
         if voice.channel != channel.name:
             await voice.move_to(channel)
+            await ctx.send(embed=discord.Embed(title=f"RD тут {channel.name}", color=0xaf7ac5))
             print("Connect on " + channel.name)
         print(voice.channel)
     else:
         await channel.connect()
+        await ctx.send(embed=discord.Embed(title=f"RD тут {channel.name}", color=0xaf7ac5))
         print("Connect on " + channel.name)
 
 
@@ -39,7 +41,7 @@ async def leave(ctx):
 
     if voice:
         await voice.disconnect()
-        await ctx.send("Bye")
+        await ctx.send(embed=discord.Embed(title="Удачи", color=0xaf7ac5))
 
 
 @bot.command(aliases=["p"])
@@ -63,16 +65,21 @@ async def play(ctx, arg):
     raw_song = dl.streams.get_audio_only().download(output_path="video_dl")
     print(raw_song)
     queue = os.listdir(path="queue")
-    new_file = "queue\\" + str(int(queue[len(queue) - 1][:-4]) + 1 if len(queue) != 0 else len(queue)) + ".mp3"
+    new_file = "queue\\" + str(max(queue, key=len)[:-4] + "b" if len(queue) != 0 else "b") + ".mp3"
     print(os.path.join(raw_song))
     os.rename(os.path.join(raw_song), os.path.join(new_file))
 
     # Воспроизведение музыки
     queue = os.listdir(path="queue")
     if not voice.is_playing():
-        voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[0])), after=lambda e: print(e))
-        await asyncio.sleep(MP4("queue\\" + queue[0]).info.length + 1)
-        await start_play(ctx)
+        try:
+            await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
+            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[0])), after=lambda e: print(e))
+            await asyncio.sleep(MP4("queue\\" + queue[0]).info.length + 1)
+            await start_play(ctx)
+        except Exception as e:
+            await ctx.send(f"Возникла ошибка {e}")
+            print(e)
 
 
 @bot.command()
@@ -81,24 +88,33 @@ async def start_play(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     os.remove("queue\\" + queue[0])
     if len(queue) > 1:
-        voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[1])), after=lambda e: print(e))
-        play_next = True
-        await asyncio.sleep(MP4("queue\\" + queue[1]).info.length + 1)
-        if play_next:
-            await start_play(ctx)
+        try:
+            await ctx.send(embed=discord.Embed(title="Флексим под", color=0xaf7ac5, description=ctx.message.content))
+            voice.play(discord.FFmpegPCMAudio(executable="ffmpeg\\bin\\ffmpeg.exe", source=os.path.join("queue\\" + queue[1])), after=lambda e: print(e))
+            play_next = True
+            await asyncio.sleep(MP4("queue\\" + queue[1]).info.length + 1)
+            if play_next:
+                await start_play(ctx)
+        except Exception as e:
+            await ctx.send(f"Возникла ошибка {e}")
+            print(e)
 
 @bot.command()
 async def stop(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if voice.is_playing():
         play_next = False
+        await ctx.send(embed=discord.Embed(title="Конец танцам", color=0xaf7ac5))
         voice.stop()
 
 @bot.command()
 async def skip(ctx):
-    queue = os.listdir(path="queue")
-    await stop(ctx)
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if voice.is_playing():
+        play_next = False
+        voice.stop()
     await asyncio.sleep(1)
+    await ctx.send(embed=discord.Embed(title="Хейтер", color=0xaf7ac5, description=ctx.author.mention))
     await start_play(ctx)
 
 
@@ -113,7 +129,7 @@ async def bird(ctx):
     response = requests.get('https://some-random-api.ml/img/birb')
     json_data = json.loads(response.text)
 
-    embed = discord.Embed(color=0xff9900, title='Random Bird')
+    embed = discord.Embed(color=0xaf7ac5, title='Random Bird')
     embed.set_image(url=json_data['link'])
     await ctx.send(embed=embed)
 
