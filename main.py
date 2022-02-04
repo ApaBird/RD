@@ -10,7 +10,15 @@ import asyncio
 
 bot = commands.Bot(command_prefix=settings['prefix'], intents=discord.Intents.all())
 play_next = True
+if "queue" in os.listdir():
+    print("Ok...")
+else:
+    os.mkdir("queue")
 
+if "video_dl" in os.listdir():
+    print("Ok...")
+else:
+    os.mkdir("video_dl")
 
 @bot.command(aliases=["j"])
 async def join(ctx):
